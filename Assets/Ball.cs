@@ -18,6 +18,8 @@ public class Ball : MonoBehaviour
     private Scene scenePrediction;
     private PhysicsScene2D scenePredictionPhysics;
 
+    private float ballScorePosition;
+
     void Awake(){
         physics = GetComponent<Rigidbody2D>();
     }
@@ -72,6 +74,16 @@ public class Ball : MonoBehaviour
         transform.position = defaultBallPosition;
         physics.velocity = Vector2.zero;
         physics.angularVelocity = 0f;
+    }
+
+    void OnTriggerEnter2D(Collider2D collider){
+        ballScorePosition = transform.position.y;
+    }
+
+    void OnTriggerExit2D(Collider2D collider){
+        if(transform.position.y < ballScorePosition){
+            Debug.Log("Scored");
+        }
     }
 
     private void createTrajectory(GameObject newBallPrediction){
