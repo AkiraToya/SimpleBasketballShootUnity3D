@@ -10,6 +10,7 @@ public class Ball : MonoBehaviour
     public GameObject ballPrediction;
     public int maxTrajectoryIteration = 50;
     public UnityEvent scoredEvent;
+    public UnityEvent<Transform> onGroundEvent;
 
     private Vector2 defaultBallPosition;
     private Vector2 startPosition;
@@ -70,12 +71,7 @@ public class Ball : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if(!collision.gameObject.tag.Equals("ground")) return;
-        
-        physics.isKinematic = true;
-        transform.position = defaultBallPosition;
-        physics.velocity = Vector2.zero;
-        physics.angularVelocity = 0f;
+        checkGroundContact(collision);
     }
 
     void OnTriggerEnter2D(Collider2D collider){
@@ -131,5 +127,16 @@ public class Ball : MonoBehaviour
         CreateSceneParameters sceneParameters = new CreateSceneParameters(LocalPhysicsMode.Physics2D);
         scenePrediction = SceneManager.CreateScene("PredictionScene", sceneParameters);
         scenePredictionPhysics = scenePrediction.GetPhysicsScene2D();
+    }
+
+    private void checkGroundContact(Collision2D collision)
+    {
+        if (!collision.gameObject.tag.Equals("ground")) return;
+
+        physics.isKinematic = true;
+        physics.velocity = Vector2.zero;
+        physics.angularVelocity = 0f;
+
+        onGroundEvent.Invoke(transform);
     }
 }
