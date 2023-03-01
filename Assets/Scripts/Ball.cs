@@ -20,6 +20,9 @@ public class Ball : MonoBehaviour
     private GameSystem gameSystem;
     private Scene scenePrediction;
     private PhysicsScene2D scenePredictionPhysics;
+
+    [SerializeField]
+    private GameObject ballBounceSound;
     
     void Awake(){
         initGameSystem();
@@ -58,6 +61,7 @@ public class Ball : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
         checkGroundContact(collision);
+        checkBallCollisionSoundCondition(collision);
     }
 
     void OnTriggerEnter2D(Collider2D collider){
@@ -112,5 +116,13 @@ public class Ball : MonoBehaviour
     {
         if (!collision.gameObject.tag.Equals("ground")) return;
         onGroundEvent.Invoke();
+    }
+
+    private void checkBallCollisionSoundCondition(Collision2D collision){
+        if (!collision.gameObject.tag.Equals("board") &&
+            !collision.gameObject.tag.Equals("ground")
+        ) return;
+
+        Instantiate(ballBounceSound);
     }
 }
